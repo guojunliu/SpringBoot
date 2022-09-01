@@ -2,7 +2,7 @@ package com.example.demo.controller;
 
 import com.example.demo.entity.User;
 import com.example.demo.respones.HttpResponse;
-import com.example.demo.service.StudentService;
+import com.example.demo.service.UserService;
 import com.google.gson.Gson;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,24 +14,24 @@ import java.util.Optional;
 @RestController
 public class UserController {
 
-    private StudentService studentService;
+    private UserService userService;
 
-    public UserController(StudentService studentService) {
-        this.studentService = studentService;
+    public UserController(UserService userService) {
+        this.userService = userService;
     }
 
     /**
      * 查询列表
      * @return
      */
-    @RequestMapping(value = "/student/list", method = RequestMethod.GET)
+    @RequestMapping(value = "/user/list", method = RequestMethod.GET)
     public HttpResponse studentList(@RequestParam Map<String, Object> params){
 
         Gson gson = new Gson();
         String json = gson.toJson(params);
         User user = gson.fromJson(json,User.class);
 
-        List<User> userList = studentService.findAll();
+        List<User> userList = userService.findAll();
         HttpResponse response = new HttpResponse(200,userList==null?new HashMap():userList,true);
 
         return response;
@@ -41,14 +41,14 @@ public class UserController {
      * 查询详情
      * @return
      */
-    @RequestMapping(value = "/student/detail", method = RequestMethod.GET)
+    @RequestMapping(value = "/user/detail", method = RequestMethod.GET)
     public HttpResponse findById(@RequestParam Map<String, Object> params) {
 
         Gson gson = new Gson();
         String json = gson.toJson(params);
         User user = gson.fromJson(json,User.class);
 
-        Optional<User> responseUser = studentService.findById(user.getId());
+        Optional<User> responseUser = userService.findById(user.getId());
         HttpResponse response = new HttpResponse(200,responseUser==null?new HashMap():responseUser,true);
 
         return response;
@@ -58,14 +58,14 @@ public class UserController {
      * 新增一条
      * @return
      */
-    @RequestMapping(value = "/student/new", method = RequestMethod.GET)
+    @RequestMapping(value = "/user/new", method = RequestMethod.GET)
     public HttpResponse save(@RequestParam Map<String, Object> params){
 
         Gson gson = new Gson();
         String json = gson.toJson(params);
         User user = gson.fromJson(json,User.class);
 
-        User responseUser =  studentService.save(user);
+        User responseUser =  userService.save(user);
         HttpResponse response;
         if (responseUser == null) {
             response = new HttpResponse(200,new HashMap(),false);
@@ -81,13 +81,13 @@ public class UserController {
     /**
      * 根据id删除一条
      */
-    @RequestMapping(value = "/student/delete", method = RequestMethod.GET)
+    @RequestMapping(value = "/user/delete", method = RequestMethod.GET)
     public HttpResponse delete(@RequestParam Map<String, Object> params){
         Gson gson = new Gson();
         String json = gson.toJson(params);
         User user = gson.fromJson(json,User.class);
 
-        boolean bb = studentService.delete(user);
+        boolean bb = userService.delete(user);
         HttpResponse response;
         if (bb) {
             response = new HttpResponse(200, new HashMap(),true);
@@ -113,13 +113,13 @@ public class UserController {
      * 根据id修改一条
      * @return
      */
-    @RequestMapping(value = "/student/update", method = RequestMethod.GET)
+    @RequestMapping(value = "/user/update", method = RequestMethod.GET)
     public HttpResponse update(@RequestParam Map<String, Object> params){
         Gson gson = new Gson();
         String json = gson.toJson(params);
         User user = gson.fromJson(json,User.class);
 
-        User responseUser =  studentService.update(user);
+        User responseUser =  userService.update(user);
         HttpResponse response;
         if (responseUser == null) {
             response = new HttpResponse(200,new HashMap(),false);
