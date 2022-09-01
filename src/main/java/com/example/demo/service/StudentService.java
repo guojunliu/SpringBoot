@@ -36,16 +36,13 @@ public class StudentService {
         return userRepository.findAll();
     }
 
-    public User save(UserRequestEntity userRequestEntity){
-        User userObj = Optional.of(userRequestEntity).map(User::new).get();
+    public User save(User userObj){
         return userRepository.save(userObj);
     }
 
-    public User save(String name, int id){
-        Optional<User> optionalUserObj = userRepository.findById(id);
+    public User update(User userObj){
+        Optional<User> optionalUserObj = userRepository.findById(userObj.getId());
         if(optionalUserObj.isPresent()) {
-            User userObj = optionalUserObj.get();
-            userObj.setName(name);
             return userRepository.save(userObj);
         }
         return null;

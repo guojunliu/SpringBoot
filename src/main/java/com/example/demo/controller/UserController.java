@@ -3,6 +3,8 @@ package com.example.demo.controller;
 import com.example.demo.entity.User;
 import com.example.demo.entity.UserRequestEntity;
 import com.example.demo.service.StudentService;
+import com.google.gson.Gson;
+import org.springframework.boot.configurationprocessor.json.JSONObject;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -18,19 +20,63 @@ public class UserController {
         this.studentService = studentService;
     }
 
-    @RequestMapping(value = "/student/{id}", method = RequestMethod.GET)
-    public Optional<User> findById(@PathVariable int id) {
-        System.out.println("ssssss");
-        return studentService.findById(id);
+    /**
+     * 查询列表
+     * @return
+     */
+    @RequestMapping(value = "/student/list", method = RequestMethod.GET)
+    public List<User> studentList(@RequestParam Map<String, Object> params){
+        int id = 0;
+        if (params.containsKey("id")){
+            id = (int)params.get("id");
+        }
+        String name = "";
+        if (params.containsKey("name")){
+            name = params.get("name").toString();
+        }
+
+        System.out.printf("id %d" ,id);
+        System.out.printf("name %s" ,name);
+
+        return studentService.findAll();
     }
 
     /**
-     * 查询所有
+     * 查询详情
      * @return
      */
-    @RequestMapping(value = "/student", method = RequestMethod.GET)
-    public List<User> findAll(){
-        return studentService.findAll();
+    @RequestMapping(value = "/student/detail", method = RequestMethod.GET)
+    public Optional<User> findById(@RequestParam Map<String, Object> params) {
+
+        Gson gson = new Gson();
+        String json = gson.toJson(params);
+        User user = gson.fromJson(json,User.class);
+
+        return studentService.findById(user.getId());
+    }
+
+    /**
+     * 新增一条
+     * @return
+     */
+    @RequestMapping(value = "/student/new", method = RequestMethod.GET)
+    public User save(@RequestParam Map<String, Object> params){
+
+        Gson gson = new Gson();
+        String json = gson.toJson(params);
+        User user = gson.fromJson(json,User.class);
+        return studentService.save(user);
+    }
+
+    /**
+     * 根据id删除一条
+     */
+    @RequestMapping(value = "/student/delete", method = RequestMethod.GET)
+    public void delete(@RequestParam Map<String, Object> params){
+        Gson gson = new Gson();
+        String json = gson.toJson(params);
+        User user = gson.fromJson(json,User.class);
+        studentService.delete(user.getId());
     }
 
     /**
@@ -43,51 +89,14 @@ public class UserController {
     }
 
     /**
-     * 插入一条
-     * @param studentRequestEntity
-     * @return
-     */
-    @RequestMapping(value = "/student", method = RequestMethod.POST)
-    public User save(@RequestBody UserRequestEntity studentRequestEntity){
-        return studentService.save(studentRequestEntity);
-    }
-
-    @RequestMapping(value = "/student/addx", method = RequestMethod.GET)
-    public User add(@RequestParam Map<String, Object> params){
-        System.out.println(params.get("name"));
-        return null;
-//        return studentService.save(studentRequestEntity);
-    }
-
-    /**
-     * 根据id删除一条
-     * @param id
-     */
-    @RequestMapping(value = "/student/{id}", method = RequestMethod.DELETE)
-    public void delete(@PathVariable int id){
-        studentService.delete(id);
-    }
-
-    /**
      * 根据id修改一条
-     * @param name
-     * @param id
      * @return
      */
-    @RequestMapping(value = "/student/{id}", method = RequestMethod.PUT)
-    public User save(@RequestParam String name, @PathVariable int id){
-        return studentService.save(name, id);
+    @RequestMapping(value = "/student/update", method = RequestMethod.GET)
+    public User update(@RequestParam Map<String, Object> params){
+        Gson gson = new Gson();
+        String json = gson.toJson(params);
+        User user = gson.fromJson(json,User.class);
+        return studentService.update(user);
     }
-
-    /**
-     * 根据id修改一条
-     * @param name
-     * @param id
-     * @return
-     */
-    @RequestMapping(value = "/student/one/{id}", method = RequestMethod.PUT)
-    public User saveOne(@RequestBody String name, @PathVariable int id){
-        return studentService.save(name, id);
-    }
-
 }
