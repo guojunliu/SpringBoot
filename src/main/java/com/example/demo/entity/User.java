@@ -19,10 +19,6 @@ public class User {
         this.name = name;
     }
 
-    public User(UserRequestEntity userRequestEntity) {
-        this.name = userRequestEntity.getName();
-    }
-
     public int getId() {
         return id;
     }

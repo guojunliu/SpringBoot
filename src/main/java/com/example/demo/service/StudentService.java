@@ -1,7 +1,6 @@
 package com.example.demo.service;
 
 import com.example.demo.entity.User;
-import com.example.demo.entity.UserRequestEntity;
 import com.example.demo.repository.UserRepository;
 import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
@@ -48,7 +47,12 @@ public class StudentService {
         return null;
     }
 
-    public void delete(int id){
-        userRepository.deleteById(id);
+    public boolean delete(User userObj){
+        Optional<User> optionalUserObj = userRepository.findById(userObj.getId());
+        if(optionalUserObj.isPresent()) {
+            userRepository.deleteById(userObj.getId());
+            return true;
+        }
+        return false;
     }
 }
